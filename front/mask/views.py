@@ -7,7 +7,7 @@ from .forms import PostForm
 from .models import Post
 from .tasks import sleepy
 from .utils import encrypt, check_pw, get_alert, set_alert
-from pdf_front.celery import debug_task
+from front.celery import debug_task
 
 
 def index(req, **kwargs):

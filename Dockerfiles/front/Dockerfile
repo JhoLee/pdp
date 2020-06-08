@@ -3,6 +3,8 @@
 FROM ubuntu:18.04
 MAINTAINER Jho Lee "jho.lee@kakao.com"
 
+ENV PYTHONBUFFERED 1
+
 
 ENV CONDA="/root/miniconda3"
 ENV PATH="${CONDA}/bin:${PATH}"
@@ -13,11 +15,9 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && \
     apt-get install -y wget && \
        rm -rf /var/lib/apt/lists/*
-WORKDIR /app
 
 # copy sources
-COPY ./api /app/api
-COPY ./models /app/models
+COPY ./api /app
 
 # install conda
 RUN wget \
@@ -36,16 +36,16 @@ RUN conda install \
         opencv \
         django \
         Pillow \
- && conda clean -afy \
- && pip install --no-cache-dir \
-        Celery
+ && conda clean -afy
+RUN pip install --no-cache-dir \
+        Celery \
+        bcrypt
 
 
 # copy sources
-COPY pdf_front /app/pdf_front
+COPY front /app
 
-WORKDIR /app/pdf_front
+WORKDIR /app
 
-# Develop server
-RUN python gen_secret_key.py \
- && python manage.py runserver
+CMD ["bash", "-c", "./entry_point.sh"]
+#CMD ["python", "manage.py", "runserver", "0:8000"]

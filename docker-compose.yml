@@ -1,32 +1,79 @@
 version: "3.7"
 services:
-  db:
+  api-db:
     image: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=db
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTRGRES_INITDB_ARGS=--encoding=UTF-8
+    volumes:
+      - back-db-data:/var/lib/postgresql/data
+    networks:
+      - back
 
   api:
     build:
       context: .
       dockerfile: Dockerfiles/api/Dockerfile
+    depends_on:
+      - api-db
     environment:
       - DJANGO_DEBUG=True
       - DJANGO_DB_BACKENDS=django.db.backends.postgresql
-      - DJANGO_DB_HOST=db
+      - DJANGO_DB_HOST=api-db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=db
+      - DJANGO_DB_USERNAME=user
+      - DJANGO_DB_PASSWORD=password
+    ports:
+      - "7777:7777"
+    command: ["bash", "-c", "./entry_point.sh"]
+    networks:
+      - back
+      - middle
+    restart: always
+
+  front-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    volumes:
+      - front-db-data:/var/lib/postgresql/data
+    networks:
+      - front
+
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfiles/front/Dockerfile
+    depends_on:
+      - front-db
+      - api
+    environment:
+      - DJANGO_DEBUG=False
+      - DJANGO_DB_BACKENDS=django.db.backends.postgresql
+      - DJANGO_DB_HOST=front-db
       - DJANGO_DB_PORT=5432
       - DJANGO_DB_NAME=db
       - DJANGO_DB_USERNAME=user
       - DJANGO_DB_PASSWORD=password
     ports:
       - "8000:8000"
-    command:
-      - python manage.py runserver 0:8000
+    command: ["bash", "-c", "./entry_point.sh"]
+    networks:
+      - middle
+      - front
     restart: always
+
 volumes:
-  db-data:
-  api-data:
+  back-db-data:
+  front-db-data:
+
+networks:
+  front:
+  middle:
+  back:

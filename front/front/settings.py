@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
     'mask.apps.MaskConfig',
 
-    'django_celery_results',
+    # 'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'front.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('DJANGO_DB_BACKENDS', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('DJANGO_DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
+        'USER': os.environ.get('DJANGO_DB_USER', None),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', None),
+        'HOST': os.environ.get('DJANGO_DB_HOST', None),
+        'PORT': os.environ.get('DJANGO_DB_PORT', None),
     }
 }
 

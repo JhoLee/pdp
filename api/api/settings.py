@@ -85,7 +85,7 @@ DATABASES = {
         'USER': os.environ.get('DJANGO_DB_USER', None),
         'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', None),
         'HOST': os.environ.get('DJANGO_DB_HOST', None),
-        'PORT': os.environ.get('PORT', None),
+        'PORT': os.environ.get('DJANGO_DB_PORT', None),
     }
 }
 

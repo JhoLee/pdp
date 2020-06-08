@@ -56,13 +56,6 @@ RUN conda install -c pytorch \
         django-filter==2.2.0 \
         python-magic==0.4.18
 
-
 WORKDIR /app
 
-RUN python gen_secret_key.py && \
-    python init_torch.py
-
-
-RUN python manage.py makemigrations && \
-    python manage.py migrate
 CMD ["python", "manage.py", "runserver", "0:8000"]
