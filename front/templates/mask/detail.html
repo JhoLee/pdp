@@ -1,0 +1,66 @@
+{% extends "mask/base.html" %}
+
+{% load static %}
+{% load template_utils %}
+
+{% block title %}
+    {{ block.super }} :: blur
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'mask:index' %}">mask</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ post.id }}</li>
+{% endblock breadcrumb %}
+
+{% block container %}
+
+    {% if post.result_image %}
+        <a href="{{ post.result_image.url }}">
+            <button type="button" class="btn btn-lg btn-block btn-success">Download Result</button>
+        </a>
+        <hr class="my-1">
+    {% endif %}
+    <a href="{% url 'mask:delete' post.pk %}">
+        <button type="button" class="btn btn-lg btn-block btn-danger">Delete</button>
+    </a>
+    <hr class="my-1">
+    <div class="jumbotron">
+    <small>{{ msg }}</small>
+        <h3 class="display-4">{{ post.title }}</h3>
+        <hr class="my-3">
+        <dl class="row">
+            <dt class="col-sm-2 ">reg_date</dt>
+            <dd class="col-sm-4">{{ post.reg_date }}</dd>
+
+            <dt class="col-sm-2">author</dt>
+            <dd class="col-sm-4">{{ post.author }}</dd>
+
+            <dt class="col-sm-2">status</dt>
+            <dd class="col-sm-4">{{ post.get_status_display }}</dd>
+
+            <dt class="col-sm-2">mod_date</dt>
+            {% if post.mod_date %}
+                <dd class="col-sm-4">{{ post.mod_date }}</dd>
+            {% else %}
+                <dd class="col-sm-4">Not Yet</dd>
+            {% endif %}
+        </dl>
+        <hr class="my-2">
+        <h4>Original Image</h4>
+        {% if post.image %}
+            <img class="img-fluid" src="{{ post.image.url }}" alt="Posted Image">
+        {% else %}
+            <img class="img-fluid" src="{% static 'image_not_found.png' %}" alt="Image Not Found">
+        {% endif %}
+        {% if post.result_image %}
+            <hr class="my-2">
+            <h4>Masked Image</h4>
+            <img class="img-fluid" src="{{ post.result_image.url }}" alt="Masked Image">
+        {% endif %}
+
+    </div>
+
+
+
+
+{% endblock container %}

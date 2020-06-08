@@ -1,0 +1,40 @@
+{% extends "mask/base.html" %}
+
+{% load template_utils %}
+
+{% block title %}
+    {{ block.super }} :: blur
+{% endblock title %}
+
+{% block container %}
+
+
+    <a href="{% url 'mask:post' %}">
+        <button type="button" class="btn btn-lg btn-outline-success btn-block">요청하기</button>
+    </a>
+
+    <hr class="my-1">
+
+    <div id="post-list-group" class="list-group">
+        <div class="list-group-item list-group-item-action active">
+            <h3 class="align-items-center">요청 목록</h3>
+        </div>
+
+        {% for item in posts %}
+            <a href="{% url 'mask:detail' item.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ item.id }}</h5>
+                    <small>{{ item.reg_date }}</small>
+                </div>
+                {% if item.mod_date %}
+                    <p class="mb-1">{{ item.get_status_display }} - {{ item.mod_date }}</p>
+                {% else %}
+                    <p class="mb-1">{{ item.get_status_display }}</p>
+                {% endif %}
+                <small>{{ item.author }}</small>
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock container %}

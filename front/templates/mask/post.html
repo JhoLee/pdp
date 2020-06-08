@@ -1,0 +1,38 @@
+{% extends "mask/base.html" %}
+
+{% load template_utils %}
+
+{% block title %}
+    {{ block.super }} :: blur
+{% endblock title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'mask:index' %}">mask</a></li>
+    <li class="breadcrumb-item active" aria-current="page">new</li>
+{% endblock %}
+{% block container %}
+
+    <form method="POST" action="" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="jumbotron">
+            <h2>마스킹 요청</h2>
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field.as_widget }}
+                    <small id="{{ field.auto_id }}Help" class="form-text text-muted">{{ field.help_text }}</small>
+                </div>
+            {% endfor %}
+
+
+        </div>
+        <hr class="my-4">
+
+        <button type="submit" class="btn btn-success btn-lg btn-block">등록</button>
+        <br>
+        <a href="{% url 'mask:index' %}">
+            <button type="button" class="btn btn-outline-danger btn-lg btn-block">취소</button>
+        </a>
+    </form>
+
+
+{% endblock container %}

@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTRGRES_INITDB_ARGS=--encoding=UTF-8
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfiles/api/Dockerfile
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_DB_BACKENDS=django.db.backends.postgresql
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=db
+      - DJANGO_DB_USERNAME=user
+      - DJANGO_DB_PASSWORD=password
+    ports:
+      - "8000:8000"
+    command:
+      - python manage.py runserver 0:8000
+    restart: always
+volumes:
+  db-data:
+  api-data:
