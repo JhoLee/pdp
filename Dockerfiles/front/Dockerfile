@@ -1,6 +1,6 @@
 # Dockerfiles
 
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 MAINTAINER Jho Lee "jho.lee@kakao.com"
 
 ENV PYTHONBUFFERED 1
@@ -27,25 +27,28 @@ RUN wget \
     && rm -f Miniconda3-latest-Linux-x86_64.sh
 
 RUN source ~/.bashrc \
-    && conda update -y conda \
+#    && conda update -y conda \
     && conda init bash \
     && source ~/.bashrc
 
 # conda environments
 RUN conda install \
         opencv \
-        django \
-        Pillow \
+        psycopg2 \
  && conda clean -afy
 RUN pip install --no-cache-dir \
+        django \
+        Pillow \
         Celery \
         bcrypt
 
 
 # copy sources
-COPY front /app
+COPY ./front /app
 
 WORKDIR /app
+
+RUN chmod +x ./entry_point.sh
 
 CMD ["bash", "-c", "./entry_point.sh"]
 #CMD ["python", "manage.py", "runserver", "0:8000"]

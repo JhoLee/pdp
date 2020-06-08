@@ -8,7 +8,7 @@ until python manage.py migrate; do
   echo "Retry migrate";
 done
 
-python manage.py makegmirations
+python manage.py makemigrations
 python manage.py migrate
 echo "Migration success";
 python manage.py runserver 0:8000

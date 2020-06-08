@@ -9,6 +9,8 @@ from .tasks import sleepy
 from .utils import encrypt, check_pw, get_alert, set_alert
 from front.celery import debug_task
 
+API = 'https://api:7777'
+
 
 def index(req, **kwargs):
     return render(req, 'mask/index.html')
@@ -52,6 +54,7 @@ class PostDetailView(View):
                 # context['alert'] = get_alert("Password match!", type="SUCCESS")
                 if post.status == Post.Status.STAND_BY:
                     set_alert(req, "작업 대기중입니다.", type="NORMAL")
+
                 else:
                     set_alert(req, title="작업 완료!", msg="아래 다운로드 버튼을 눌러보세요!", type="SUCCESS")
 

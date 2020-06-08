@@ -29,10 +29,31 @@ services:
     ports:
       - "7777:7777"
     command: ["bash", "-c", "./entry_point.sh"]
+    volumes:
+      - ./api/:/app/
     networks:
       - back
       - middle
     restart: always
+
+  api-celery:
+    build:
+      context: .
+      dockerfile: Dockerfiles/api/Dockerfile
+    command: celery -A api worker -l info
+    volumes:
+      - ./api/:/app/
+    networks:
+      - back
+    depends_on:
+      - api-db
+      - api-redis
+
+  api-redis:
+    image: "redis:alpine"
+    networks:
+      - back
+
 
   front-db:
     image: postgres
@@ -64,10 +85,30 @@ services:
     ports:
       - "8000:8000"
     command: ["bash", "-c", "./entry_point.sh"]
+    volumes:
+      - ./front/:/app/
     networks:
       - middle
       - front
     restart: always
+
+  front-celery:
+    build:
+      context: .
+      dockerfile: Dockerfiles/front/Dockerfile
+    command: celery -A api worker -l info
+    volumes:
+      - ./front/:/app/
+    depends_on:
+      - front-db
+      - front-redis
+    networks:
+      - front
+
+  front-redis:
+    image: "redis:alpine"
+    networks:
+      - front
 
 volumes:
   back-db-data:
